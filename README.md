@@ -1,6 +1,6 @@
 A fun developer tool that generates hilarious programming excuses.
 
-Features:
+Features:-
 - 200+ developer excuses
 - Category filters
 - Copy to clipboard
