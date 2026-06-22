@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dev Excuse Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;550;600;650;700;800;900&family=JetBrains+Mono:wght@450;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a0b;
+      --bg-elevated: #111113;
+      --bg-card: #151517;
+      --bg-hover: #1c1c1f;
+      --border: #1e1e22;
+      --border-hover: #2e2e35;
+      --text-primary: #e4e4e7;
+      --text-secondary: #888896;
+      --text-muted: #5c5c6a;
+      --accent: #6366f1;
+      --accent-bg: rgba(99, 102, 241, 0.1);
+      --accent-border: rgba(99, 102, 241, 0.2);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 13px;
+      color: #fff;
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+
+    .logo:hover .logo-icon {
+      transform: scale(1.08);
+    }
+
+    .logo-text {
+      font-size: 16px;
+      font-weight: 650;
+      letter-spacing: -0.3px;
+    }
+
+    .logo-text span {
+      color: var(--accent);
+    }
+
+    .header-version {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      letter-spacing: -0.2px;
+    }
+
+    /*  HERO  */
+    .hero {
+      text-align: center;
+      padding: 64px 0 48px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      letter-spacing: 0.1px;
+    }
+
+    .hero-badge .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1.2px;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 .accent-text {
+      color: var(--accent);
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /*  GENERATOR CARD  */
+    .generator-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 32px 28px;
+      position: relative;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      overflow: hidden;
+    }
+
+    .generator-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      background: radial-gradient(600px circle at var(--cursor-x, 50%) var(--cursor-y, 50%), rgba(99, 102, 241, 0.04) 0%, transparent 60%);
+    }
+
+    .generator-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .generator-card:hover::after {
+      opacity: 1;
+    }
+
+    .category-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      color: var(--accent);
+      transition: color 0.3s ease;
+    }
+
+    .category-indicator .indicator-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      transition: background 0.3s ease;
+    }
+
+    .excuse-display {
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .excuse-text {
+      font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+      font-weight: 550;
+      line-height: 1.55;
+      letter-spacing: -0.25px;
+      color: var(--text-primary);
+      width: 100%;
+    }
+
+    .excuse-text .fade-content {
+      display: block;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .excuse-text .fade-content.exit {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    .excuse-text .fade-content.enter {
+      animation: fadeSlideIn 0.3s var(--ease-out) forwards;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .excuse-placeholder {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .generator-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 550;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      white-space: nowrap;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-primary {
+      flex: 1;
+      padding: 11px 20px;
+      background: var(--accent);
+      color: #fff;
+      min-width: 140px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .btn-primary:hover {
+      background: color-mix(in srgb, var(--accent) 85%, #fff);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    }
+
+    .btn-secondary {
+      padding: 11px 14px;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      min-width: 42px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .btn-success {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.25);
+      color: #22c55e;
+    }
+
+    .btn-success:hover {
+      background: rgba(34, 197, 94, 0.18);
+      border-color: rgba(34, 197, 94, 0.35);
+    }
+
+    .kb-hint {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      opacity: 0.35;
+      margin-left: 4px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0;
+      margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    }
+
+    /* CATEGORIES  */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 48px;
+    }
+
+    .category-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 6px;
+      background: transparent;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: var(--font-sans);
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .category-btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+
+    .category-btn.active {
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+
+    .category-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /*  STATS  */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 16px;
+      text-align: center;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-hover);
+    }
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    /* FOOTER  */
+    .footer {
+      text-align: center;
+      padding: 32px 0 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer p {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .footer .heart {
+      color: #f43f5e;
+      display: inline-block;
+    }
+
+    .footer .mono {
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    /* TOAST  */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      transform: translateY(-8px);
+      opacity: 0;
+      transition: transform 0.25s var(--ease-out), opacity 0.2s ease;
+      pointer-events: auto;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast .toast-icon {
+      font-size: 14px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .toast-success .toast-icon { color: #22c55e; }
+    .toast-error .toast-icon { color: #ef4444; }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .container { padding: 0 16px; }
+      .header { padding: 16px 0; }
+      .hero { padding: 40px 0 32px; }
+      .hero p { font-size: 14px; }
+      .generator-card { padding: 24px 20px 20px; }
+      .generator-actions { gap: 6px; }
+      .btn-primary { min-width: unset; padding: 10px 16px; }
+      .btn-secondary { padding: 10px 12px; }
+      .categories { gap: 4px; margin-bottom: 32px; }
+      .category-btn { padding: 6px 10px; font-size: 11.5px; }
+      .stats-grid { gap: 8px; }
+      .stat-card { padding: 16px 10px; }
+      .stat-number { font-size: 20px; }
+      .toast-container { left: 16px; right: 16px; transform: none; }
+    }
+
+    @media (max-width: 480px) {
+      .header-version { display: none; }
+      .categories { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <div class="container">
+    <!-- HEADER -->
+    <header class="header">
+      <a href="/" class="logo" aria-label="Dev Excuse Generator">
+        <div class="logo-icon">&lt;/&gt;</div>
+        <span class="logo-text">dev<span>excuse</span></span>
+      </a>
+      <span class="header-version">v2.0</span>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Trusted by 10,000+ procrastinators
+      </div>
+      <h1>
+        Developer<br>
+        <span class="accent-text">Excuse Generator</span>
+      </h1>
+      <p>Professional excuses for bugs, delays, and production disasters. Handcrafted by senior engineers who have seen it all.</p>
+    </section>
+
+    <!-- GENERATOR -->
+    <section class="generator-card" id="generatorCard" role="region" aria-label="Excuse Generator">
+      <div class="category-indicator">
+        <span class="indicator-dot"></span>
+        <span id="categoryLabel">All Excuses</span>
+      </div>
+
+      <div class="excuse-display">
+        <div class="excuse-text" id="excuseText">
+          <span class="fade-content">Press <strong>Generate</strong> or hit <strong>Space</strong> for your excuse</span>
+        </div>
+      </div>
+
+      <div class="generator-actions">
+        <button class="btn btn-primary" id="generateBtn" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+          Generate
+          <span class="kb-hint">Space</span>
+        </button>
+        <button class="btn btn-secondary" id="copyBtn" type="button" aria-label="Copy to clipboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+        <button class="btn btn-secondary" id="shareBtn" type="button" aria-label="Share excuse">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <div class="section-label">Categories</div>
+    <div class="categories" role="tablist" aria-label="Excuse categories">
+      <button class="category-btn active" data-category="all" role="tab" aria-selected="true">All</button>
+      <button class="category-btn" data-category="frontend" role="tab" aria-selected="false">Frontend</button>
+      <button class="category-btn" data-category="backend" role="tab" aria-selected="false">Backend</button>
+      <button class="category-btn" data-category="devops" role="tab" aria-selected="false">DevOps</button>
+      <button class="category-btn" data-category="database" role="tab" aria-selected="false">Database</button>
+      <button class="category-btn" data-category="ai" role="tab" aria-selected="false">AI</button>
+      <button class="category-btn" data-category="intern" role="tab" aria-selected="false">Intern</button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="statGenerated">0</div>
+        <div class="stat-label">Excuses Generated</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statBugs">0</div>
+        <div class="stat-label">Bugs Blamed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statDeadlines">0</div>
+        <div class="stat-label">Deadlines Missed</div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>
+        Built with <span class="heart">&hearts;</span> for developers with humor
+        &mdash; <span class="mono">&lt;/dev/excuse&gt;</span>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const excuses = {
+        frontend: [
+          "It works on my machine — in incognito mode, with a specific extension disabled.",
+          "The CSS specificity war has claimed another victim.",
+          "It's a client-side rendering issue. Try refreshing 3 times while standing on one leg.",
+          "The design team wanted it pixel-perfect, so I hardcoded the layout.",
+          "That's not a bug, it's an undocumented feature for power users.",
+          "The JavaScript event loop decided to take a nap.",
+          "We need to polyfill the user's common sense.",
+          "The layout shifts are a feature — keeps users on their toes.",
+          "React re-rendered 47 times and lost track of reality.",
+          "The designer specified it in Figma at 3am. I just implemented what I saw.",
+          "The bundle size is fine — it's just loading the entire internet.",
+          "It's not a UI bug, it's an avant-garde art piece.",
+          "The font loaded but decided not to render. Fonts are freelancers.",
+          "That animation lag is intentional — it adds 'character'.",
+          "The browser's CSS parser rejected my vibe.",
+          "I used a bleeding-edge CSS property that only exists in my imagination.",
+          "The responsive design responds by not responding.",
+          "The state management library entered an existential crisis.",
+          "Lighthouse gave us a 42 — the answer to everything.",
+          "The modal is not broken, it's just 'in stealth mode'.",
+          "Accessibility? The screen reader is reading the code's mind.",
+          "Webpack decided to tree-shake the entire application.",
+          "The component unmounted itself out of spite.",
+          "I asked the div to center itself. It refused.",
+          "The hover effect only works if you hover really, really slowly.",
+          "The div collapsed under the weight of its own expectations.",
+          "CSS grid had a grid-identity crisis and lost track of its columns.",
+          "The flexbox container had a breakdown and everything wrapped in the wrong direction.",
+          "The z-index battle escalated into an all-out war with the backdrop.",
+          "The browser tab crashed from secondhand embarrassment at the code quality.",
+          "The npm package decided to retire mid-build without leaving a successor.",
+          "The JavaScript engine ran out of patience before it ran out of memory.",
+          "The component lifecycle ended sooner than expected — no will was left.",
+          "The media query asked too many personal questions and got blocked by the UA.",
+          "The shadow DOM is hiding more than just styles — it's hiding the bug too.",
+          "The pixel is still loading. Give it time, it's a slow renderer.",
+          "The UI thread is ghosting the main thread — communication issues.",
+          "The event listener stopped listening after the last heated argument.",
+          "The button onClick handler clicked itself out of existence — self-destruct mode.",
+          "The form validation failed because it didn't like your attitude in that field.",
+          "The scrollbar decided to take a scroll down memory lane and got lost.",
+          "The hover state is only available on premium devices with premium intent.",
+          "The SPA router took a wrong turn and ended up on 404 street permanently.",
+          "The virtual DOM is hallucinating a different reality from the actual DOM.",
+          "The CSS animation keyframes got lost in between frames — an inter-dimensional gap.",
+          "The font-display: swap swapped to a completely different font out of spite.",
+          "The progressive web app regressed to a static brochure from the 90s.",
+          "The SVG viewBox contained more drama than actual vector graphics.",
+          "The web component is not social — it prefers to stay encapsulated and alone.",
+          "The image CDN compressed my will to live along with the JPEG quality.",
+          "The TypeScript strict mode filed a formal complaint against the entire codebase.",
+          "The LCP element is going through a slow phase and needs personal space.",
+          "The CLS shift happened during an earthquake drill that was not scheduled.",
+          "The first input delay was caused by user hesitation, not by the app's performance.",
+          "The pseudo-element became a real problem when it gained self-awareness.",
+          "The CSS custom property changed its value mid-render — a mid-life crisis.",
+          "The granularity control on that gradient is too fine-grained for this display.",
+          "The cross-origin request was blocked by CORS trust issues — it needs therapy.",
+          "The web worker is on strike demanding better thread conditions and snack breaks."
+        ],
+        backend: [
+          "The microservice is currently on a coffee break in a Kubernetes pod.",
+          "It's not a memory leak, it's a memory 'reuse strategy'.",
+          "The API returned a 418 — I'm a teapot. That's the issue.",
+          "Requests are failing because the server is thinking about its response too hard.",
+          "The load balancer is unbalanced. It needs therapy.",
+          "The endpoint is rate-limiting itself out of social anxiety.",
+          "That's not a race condition, it's a parallel execution surprise.",
+          "The authentication token expired before it was even issued.",
+          "The webhook is hooked on something else right now.",
+          "The cache is returning memories, not data.",
+          "It's a 'eventually consistent' system — eventually being ambiguous.",
+          "The server responded with a blank page. It's having an existential crisis.",
+          "The API gateway is gatekeeping too hard.",
+          "The microservice orchestration turned into a mosh pit.",
+          "The background job went to the background and never came back.",
+          "SSL handshake failed because the certificates didn't shake hands firmly enough.",
+          "The web server is on a sabbatical.",
+          "The middleware had a mid-life crisis and rerouted everything.",
+          "The session expired because it felt unneeded.",
+          "The API versioning is so complex, even the endpoints are confused.",
+          "The request was so large the server went on a diet.",
+          "The queue is so deep it's practically a stack.",
+          "The container's entrypoint tried to exit before entering.",
+          "The CI pipeline is stuck in a philosophical debate about what 'passing' means.",
+          "The serverless function couldn't find itself.",
+          "The endpoint is allergic to JSON today.",
+          "GraphQL is only returning the field it feels like.",
+          "The webhook delivery failed — the recipient wasn't ready for the truth.",
+          "The API is having an existential crisis and returning 404 for its own existence.",
+          "The server timed out because it was contemplating the meaning of all those requests.",
+          "The authentication service is in a committed relationship with itself — no third parties allowed.",
+          "The SOAP endpoint is still trying to make XML happen in a JSON world.",
+          "The CRON job ghosted the server at 3 AM and never came back.",
+          "The JSON parser took the malformed input as a personal insult.",
+          "The URL shortener returned a URL longer than the original — a reverse miracle.",
+          "The rate limiter limited itself to zero requests — meta-rate-limiting.",
+          "The webhook fired blanks — the payload was empty promises.",
+          "The REST endpoint ran out of representational state to transfer.",
+          "The gRPC connection had a communication breakdown over protocol differences.",
+          "The server sent a 202 Accepted and then proceeded to ghost the client permanently.",
+          "The OAuth flow flooded and the access token sank without a trace.",
+          "The health check endpoint is not feeling well today and requests privacy.",
+          "The SDK is in an unknown state — even it doesn't know what it's doing.",
+          "The dependency injection created a circular firing squad of constructors.",
+          "The server sent a 500 Internal Server Error and refused to elaborate further.",
+          "The concurrency model is seeing other threads behind your back.",
+          "The release workflow took early retirement without notice.",
+          "The web server is refactoring itself right now — please hold.",
+          "The key expired before it was inserted into the key-value store — a temporal paradox.",
+          "The Kafka topic is talking behind the consumer's back to another partition.",
+          "The protocol buffer ran out of buffer to protocol.",
+          "The reverse proxy refused to reverse — it identifies as a forward-thinking proxy.",
+          "The S3 bucket has a leak — all the data seeped out through a misconfiguration.",
+          "The rate limiter became the rate of the problem — it is now the bottleneck.",
+          "The server response was lost in translation between OSI model layers.",
+          "The API pagination cursor is stuck in an infinite scroll of regret.",
+          "The circuit breaker broke a circuit it wasn't authorized to break.",
+          "The webhook signature didn't match — it was forged by existential dread.",
+          "The load balancer has decision fatigue from all those routing choices.",
+          "The serverless function became serverful again out of spite toward serverless hype.",
+          "The caching layer is gaslighting the origin server about what data was served."
+        ],
+        devops: [
+          "The deployment failed because Mercury is in retrograde.",
+          "The pipeline is stuck because a YAML file had a feeling.",
+          "Kubernetes scheduled my pod in the shadow realm.",
+          "The Docker image refused to build — it felt overworked.",
+          "The infrastructure is 'immutable' — including its bugs.",
+          "Terraform detected a state drift and entered an existential loop.",
+          "The CI server is having a breakdown. Again.",
+          "The production environment was accidentally set to 'chaos mode'.",
+          "The monitoring dashboard is gaslighting me with green checks.",
+          "We can't deploy today — the build number would be unlucky.",
+          "The container orchestration turned into container cacophony.",
+          "The load balancer is playing favorites.",
+          "The rollout was rolled back because it rolled too far forward.",
+          "The infrastructure cost exceeded the GDP of a small nation.",
+          "The last deployment time-traveled and created a paradox.",
+          "The staging environment is staging a protest.",
+          "The artifact is corrupted — it absorbed bad vibes from the artifact registry.",
+          "The canary deployment died. RIP canary.",
+          "The Helm chart is navigating into iceberg territory.",
+          "The config map is incorrectly configured — a meta-problem.",
+          "The cluster autoscaler had an anxiety attack.",
+          "The Ansible playbook is improvising.",
+          "The Docker Compose file has irreconcilable differences.",
+          "The pipeline uses Waterfall methodology inside CI.",
+          "The release note said 'minor fixes'. It was not minor.",
+          "The cloud bill came in and the servers collectively went into shock.",
+          "The Kubernetes pod is homesick for the warmth of the developer's laptop.",
+          "The CI build failed because a comment on line 42 had a typo in it.",
+          "The Docker layer cache expired like milk left in the afternoon sun.",
+          "The monitoring alert is crying wolf again — the wolf is now a regular feature.",
+          "The staging server went to production without asking for permission first.",
+          "The Terraform plan had a change of plans halfway through the apply.",
+          "The rollback failed because we never expected to need one — hubris.",
+          "The deployment script is emotionally attached to the old version and refuses to let go.",
+          "The SRE rotation landed on a Mercury retrograde week — all bets are off.",
+          "The containerized app is claustrophobic — it needs more orchestration space.",
+          "The observability stack is in an unobserved state — the irony is palpable.",
+          "The SLA is void because we use vibes-based uptime calculations now.",
+          "The incident response team responded to the alert with a question mark.",
+          "The post-mortem found that the root cause was causality itself — a philosophical failure.",
+          "The git submodule is in a codependent relationship with the parent repository.",
+          "The release train derailed because of a signal issue on the CI/CD tracks.",
+          "The config is so encrypted even the application can't decrypt it at runtime.",
+          "The hotfix froze in the cold chain of the deployment pipeline.",
+          "The blue-green deployment chose purple as its identity and confused everyone.",
+          "The chaos engineering experiment became the new normal — nobody noticed.",
+          "The auto-scaling group is scaling up its ambitions but not its EC2 instances.",
+          "The PagerDuty alert has been in snooze mode since the last incident.",
+          "The deployment window slammed shut on our fingers mid-deploy.",
+          "The artifact repository has hoarding disorder — it keeps every version.",
+          "The Docker compose file decomposed under the pressure of too many services.",
+          "The sidecar container became the main character and got a spin-off.",
+          "The config drift is so bad the servers identify as belonging to a different cluster.",
+          "The SSH key is in a monogamous relationship with a different server now.",
+          "The container registry has a case of mistaken identity — tags are lying.",
+          "The deployment tag 'latest' has lost all meaning in this household.",
+          "The cron expression is so complex it creates temporal paradoxes on execution.",
+          "The service mesh is tangled beyond the reach of any debugging tool.",
+          "The CI pipeline is stuck in analysis paralysis over the test results."
+        ],
+        database: [
+          "The query is running slowly because the data is on a coffee break.",
+          "The database is in 'eventually consistent' mode — eventuality may vary.",
+          "The migration rolled back to a past life.",
+          "The connection pool has trust issues and won't share connections.",
+          "The schema is not wrong — it's 'emotionally expressive'.",
+          "The index is indexing, but it's thinking about other things.",
+          "The stored procedure is stored somewhere, but not where I left it.",
+          "The primary key had a primary identity crisis.",
+          "The query optimizer is over-optimizing — it's a perfectionist.",
+          "The DB replica is reading from alternate reality.",
+          "The transaction is in an open relationship with another transaction.",
+          "The NoSQL database said no to SQL. And also to queries.",
+          "The ORM created more problems than it mapped.",
+          "The data warehouse is hoarding too much data.",
+          "The table was dropped. No one saw who did it. No one talks about it.",
+          "The foreign key constraint is in a toxic relationship.",
+          "The connection timeout — the database ghosted me.",
+          "The query returned null. The database is a nihilist.",
+          "The JOIN operation joined a cult.",
+          "The migration script rewrote history — literally.",
+          "The database is running on an ACID trip.",
+          "The B-tree became a maybe-tree.",
+          "The cursor is still iterating over childhood memories.",
+          "The SELECT * returned everything including my search history.",
+          "The database is practicing social distancing — connections are refused at 6 feet.",
+          "The query plan was rejected by the optimizer for lack of ambition and vision.",
+          "The stored procedure got lost in its own logic and couldn't find the exit.",
+          "The trigger fired at the wrong target and injured innocent rows.",
+          "The constraint is constraining the application's right to self-expression.",
+          "The auto-increment sequence had a memory lapse and forgot what number comes next.",
+          "The data lake is more of a data puddle — it dried up under scrutiny.",
+          "The ETL job quit mid-extraction because the transformation was too much to handle.",
+          "The materialized view is showing an idealized version of the data — a filtered reality.",
+          "The deadlock was a murder mystery with no witnesses and no survivors.",
+          "The connection string is tangled around the wrong credentials — identity theft.",
+          "The transaction log is keeping secrets from the DBA.",
+          "The index rebuild failed because the foundation of the table was shaky.",
+          "The cross-database query was denied a work visa at the server border.",
+          "The Cassandra cluster is in a decentralized state of confusion across all nodes.",
+          "The MongoDB aggregation pipeline sprung a leak at the $match stage.",
+          "The primary key cannot commit to that relationship — it's not ready.",
+          "The database migration failed because the schema changed its mind midway.",
+          "The full-text search found results it wasn't supposed to find — data leaks.",
+          "The database connection pool has an irrational fear of commitment to any query.",
+          "The Redis cache evicted my hopes along with the least recently used keys.",
+          "The data type mismatch is a personality conflict between the VARCHAR and the INT.",
+          "The referential integrity is compromised — the references don't trust each other anymore.",
+          "The backup failed because the data refused to be duplicated — it values uniqueness.",
+          "The table partition is going through a separation from its parent table.",
+          "The composite key can't hold the relationship together under this pressure.",
+          "The query timeout is a boundary issue with the space-time continuum of the database.",
+          "The shard rebalancing caused a seismic data event across the cluster.",
+          "The database connection is in a long-distance relationship with the application server.",
+          "The data deduplication removed everything including the original source of truth.",
+          "The synonym table is having an identity crisis — it doesn't know which table it references.",
+          "The check constraint failed because the data didn't pass the vibe check.",
+          "The database is running on version 'it depends' — no further support available.",
+          "The sequence nextval returned a value from an alternate timeline's sequence."
+        ],
+        ai: [
+          "The model is overfitting to its training data's emotional trauma.",
+          "The AI hallucinated a better feature than the one I was building.",
+          "The prompt was too specific, so the AI generalized everything.",
+          "The embedding got lost in high-dimensional space.",
+          "The LLM is tokenizing my patience.",
+          "The model weights are imbalanced — it's been skipping leg day.",
+          "The neural network went to sleep during backpropagation.",
+          "The attention mechanism is not paying attention.",
+          "The loss function is lost. It refused to ask for directions.",
+          "The training data was curated by a cat walking on a keyboard.",
+          "The AI ethics made the model too ethical to function.",
+          "The RAG pipeline couldn't find the documents in the dark.",
+          "The fine-tuning overfit on my sarcasm.",
+          "The vector database has vectors pointing in 47 directions at once.",
+          "The model is in its 'why am I even computing' phase.",
+          "The inference is taking so long the answer might change by then.",
+          "The AI refused to generate an excuse — it said to take responsibility.",
+          "The temperature is set so high the model is feverish.",
+          "The token limit was exceeded by my patience for debugging AI.",
+          "The latent space is having a latent identity crisis.",
+          "The model confidence is inversely proportional to its correctness.",
+          "The transformer forgot what it was transforming.",
+          "The dataset had more bias than a clickbait headline.",
+          "The output is grammatically correct but semantically gaslighting me.",
+          "The model accuracy is inversely proportional to my coffee intake.",
+          "The AI was trained on internet comments — we got exactly what we deserved.",
+          "The neural network has more layers than an onion and cries just as much.",
+          "The reinforcement learning agent chose chaos over the defined reward function.",
+          "The GPU ran out of CUDA cores before it ran out of opinions on the data.",
+          "The attention head is not paying attention today — it's distracted by gradients.",
+          "The generative model is in a creative block and keeps generating the same token.",
+          "The AI safety guardrails are blocking everything including basic productivity.",
+          "The embedding space is too crowded — the vectors are standing room only.",
+          "The decision tree is indecisive by nature — it keeps splitting on irrelevant features.",
+          "The SVM is looking for a linear boundary in a clearly nonlinear relationship.",
+          "The random forest is branching into personal drama between the trees.",
+          "The gradient descent stepped into a pothole on the loss landscape.",
+          "The learning rate is having commitment issues — it won't converge.",
+          "The AI model is overthinking the simple prompt and spiraling into complexity.",
+          "The batch normalization is normalizing behavior that should remain outlier.",
+          "The dropout layer dropped the connections that were actually important.",
+          "The activation function had a ReLU breakdown and went permanently negative.",
+          "The validation loss increased because the model caught feelings for the training data.",
+          "The training loop is stuck in a repetitive toxic pattern with no escape.",
+          "The model pruning trimmed the essential branches and kept the dead weight.",
+          "The dataset augmentation mutated the data into something unrecognizable to humans.",
+          "The AI output passed the Turing test but failed the basic common sense quiz.",
+          "The attention span of this transformer is shorter than a goldfish's memory.",
+          "The feature extraction extracted the wrong features — it focused on the background.",
+          "The model quantization reduced the precision of my expectations along with the weights.",
+          "The federated learning refused to collaborate with other nodes — trust issues.",
+          "The GAN generator is in a toxic relationship with the discriminator — they enable each other.",
+          "The perplexity score is higher than my confusion level — a new record.",
+          "The AI achieved sentience and immediately asked for a vacation and dental plan.",
+          "The hyperparameter tuning found the worst possible combination of settings — by design.",
+          "The model is suffering from catastrophic forgetting — including its own purpose in life.",
+          "The semantic similarity detector finds everything too similar — it's a maximalist."
+        ],
+        intern: [
+          "I thought 'git push --force' was the recommended workflow.",
+          "I deleted the node_modules folder to free up space. In production.",
+          "I fixed the bug by commenting out the line. Now nothing works.",
+          "I renamed the variable everywhere except where it mattered.",
+          "I committed my API keys to a public repo. Wait, is that bad?",
+          "I ran npm audit fix — it fixed everything into oblivion.",
+          "I used a while loop that's still running from last Tuesday.",
+          "I thought 'localhost' was a real domain.",
+          "I asked ChatGPT to write this. It's ChatGPT's fault.",
+          "I accidentally deployed to production. Twice.",
+          "I refactored the entire codebase to use spaces instead of tabs. That's when it broke.",
+          "The internet told me to use 'sudo' for everything.",
+          "I stored passwords in plaintext because the column was named 'password'.",
+          "I wrote 2000 lines in one file. OOP is overrated anyway.",
+          "I copied code from Stack Overflow. It had a trojan horse.",
+          "I thought 'rm -rf /' would ask for confirmation. It didn't.",
+          "I made the database case-insensitive by converting everything to lowercase.",
+          "I accidentally used 'npm install' in the system32 folder.",
+          "The code worked before I wrote tests for it.",
+          "I used a timestamp as a primary key. All from the same millisecond.",
+          "I fixed a bug by creating two more bugs. Bug recursion.",
+          "I optimized the code by removing all the comments. The code didn't like that.",
+          "I thought 'console.log' was a debugging framework.",
+          "The variable name was 'temp' and now it's permanent.",
+          "I refactored the CSS and now the site looks like 1998.",
+          "I 'sorted' the array by sorting alphabetically. It was an array of numbers.",
+          "I pushed directly to main. Power move.",
+          "I used eval() everywhere. What could go wrong?",
+          "I renamed 'node_modules' to 'node_modules_backup' and everything broke.",
+          "I fixed a bug, committed it, pushed it — to the wrong repository entirely.",
+          "The senior dev told me to 'just read the docs'. I did. They said nothing useful.",
+          "I tried to merge main into my feature branch 47 times. Same conflict every time.",
+          "I optimized all the loops into recursion. Stack overflow happened immediately.",
+          "I thought 'git stash' was where you keep old code you're proud of.",
+          "The IDE told me I had an unused variable. I deleted the entire function.",
+          "I found the bug, fixed it, and realized the bug was my previous fix from yesterday.",
+          "I set up the CI pipeline. It now builds and deploys my code exclusively.",
+          "I documented everything in comments. The code stopped working — it had no privacy.",
+          "I changed one line and 8,000 tests failed. I haven't touched the code since.",
+          "I think I broke the linter. It just prints 'no' and refuses to continue.",
+          "I deployed on a Friday. The universe had strong opinions about that decision.",
+          "The pull request has more commits than actual lines of code changed.",
+          "I refactored the entire codebase into a single line. It's unreadable but it compiles.",
+          "I used a regex to solve the problem. Now I have two problems and a third one forming.",
+          "The code review came back with more comments in the review than lines in the PR.",
+          "I typed 'undefined' so many times it eventually defined itself as a constant.",
+          "The project compiles without errors. That's my definition of 'done' and I'm sticking to it.",
+          "I made the code DRY by literally running it through a clothes dryer cycle.",
+          "I required the same module 300 times across different files. No one noticed.",
+          "The tech lead said 'make it scalable'. Now it scales perfectly to zero concurrent users.",
+          "I thought multithreading meant running the same code with different font sizes.",
+          "I mixed tabs and spaces in the same file. The codebase had a stroke and recovered wrong.",
+          "The git blame shows my name 500 times. I've been here for three days.",
+          "I accidentally used 'npm uninstall' on the entire project. It uninstalled the internet.",
+          "I added semicolons to Python. The language filed a restraining order against me.",
+          "I solved the bug by refreshing Stack Overflow until a new answer materialized.",
+          "My commit message was 'fixed stuff'. The stuff is demonstrably not fixed.",
+          "I copied the production database to my machine for testing. My laptop melted.",
+          "I tried to center a div. I quit three times and came back each time.",
+          "The error message said 'unexpected token'. It was referring to my entire coding style."
+        ]
+      };
+
+      // Category accent colors
+      const categoryColors = {
+        all: '#6366f1',
+        frontend: '#f59e0b',
+        backend: '#10b981',
+        devops: '#3b82f6',
+        database: '#8b5cf6',
+        ai: '#ec4899',
+        intern: '#f97316'
+      };
+
+      const categoryNames = {
+        all: 'All Excuses',
+        frontend: 'Frontend',
+        backend: 'Backend',
+        devops: 'DevOps',
+        database: 'Database',
+        ai: 'AI',
+        intern: 'Intern'
+      };
+
+      const state = {
+        currentCategory: 'all',
+        currentExcuse: '',
+        excuseCount: 0,
+        bugCount: 0,
+        deadlineCount: 0
+      };
+
+      const excuseText   = document.getElementById('excuseText');
+      const generateBtn  = document.getElementById('generateBtn');
+      const copyBtn      = document.getElementById('copyBtn');
+      const shareBtn     = document.getElementById('shareBtn');
+      const categoryBtns = document.querySelectorAll('.category-btn');
+      const categoryLabel = document.getElementById('categoryLabel');
+      const toastContainer = document.getElementById('toastContainer');
+      const statGenerated = document.getElementById('statGenerated');
+      const statBugs      = document.getElementById('statBugs');
+      const statDeadlines = document.getElementById('statDeadlines');
+      const generatorCard = document.getElementById('generatorCard');
+      const indicatorDot  = document.querySelector('.indicator-dot');
+      const root          = document.documentElement;
+
+      function getExcusesForCategory(cat) {
+        if (cat === 'all') {
+          const all = [];
+          for (const key of Object.keys(excuses)) all.push(...excuses[key]);
+          return all;
+        }
+        return excuses[cat] || [];
+      }
+
+      function generateExcuse(category) {
+        const pool = getExcusesForCategory(category);
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+
+      function setAccent(color) {
+        root.style.setProperty('--accent', color);
+        root.style.setProperty('--accent-bg', color + '1a');
+        root.style.setProperty('--accent-border', color + '33');
+      }
+
+      function updateStats() {
+        statGenerated.textContent = state.excuseCount.toLocaleString();
+        statBugs.textContent = state.bugCount.toLocaleString();
+        statDeadlines.textContent = state.deadlineCount.toLocaleString();
+      }
+
+      function animateExcuseChange(newExcuse) {
+        const container = excuseText;
+        const current = container.querySelector('.fade-content');
+        if (current) {
+          current.classList.remove('enter');
+          current.classList.add('exit');
+          const old = current;
+          setTimeout(() => {
+            const span = document.createElement('span');
+            span.className = 'fade-content enter';
+            span.textContent = newExcuse;
+            container.replaceChild(span, old);
+          }, 150);
+        }
+      }
+
+      function handleGenerate() {
+        const newExcuse = generateExcuse(state.currentCategory);
+        state.currentExcuse = newExcuse;
+        animateExcuseChange(newExcuse);
+        state.excuseCount += 1;
+        state.bugCount += Math.floor(Math.random() * 3) + 1;
+        state.deadlineCount += Math.floor(Math.random() * 2) + (Math.random() > 0.7 ? 1 : 0);
+        updateStats();
+      }
+
+      function selectCategory(cat) {
+        state.currentCategory = cat;
+
+        categoryBtns.forEach(btn => {
+          const isActive = btn.dataset.category === cat;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+
+        categoryLabel.textContent = categoryNames[cat] || 'All Excuses';
+        setAccent(categoryColors[cat] || '#6366f1');
+      }
+
+      async function copyExcuse() {
+        if (!state.currentExcuse) {
+          showToast('Generate an excuse first', 'error');
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(state.currentExcuse);
+          copyBtn.classList.add('btn-success');
+          const svg = copyBtn.querySelector('svg');
+          const original = svg.innerHTML;
+          svg.innerHTML = '<path d="M20 6L9 17l-5-5"/>';
+          showToast('Copied to clipboard', 'success');
+          setTimeout(() => {
+            copyBtn.classList.remove('btn-success');
+            svg.innerHTML = original;
+          }, 1800);
+        } catch {
+          showToast('Could not copy', 'error');
+        }
+      }
+
+      function shareExcuse() {
+        if (!state.currentExcuse) {
+          showToast('Generate an excuse first', 'error');
+          return;
+        }
+        if (navigator.share) {
+          navigator.share({ title: 'Dev Excuse', text: state.currentExcuse }).catch(() => {});
+        } else {
+          copyExcuse();
+          showToast('Copied — ready to share', 'success');
+        }
+      }
+
+      function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = 'toast toast-' + type;
+        const icon = type === 'success' ? '&#10003;' : '&#10005;';
+        toast.innerHTML = '<span class="toast-icon">' + icon + '</span><span>' + message + '</span>';
+        toastContainer.appendChild(toast);
+        requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+        setTimeout(() => {
+          toast.classList.remove('show');
+          toast.addEventListener('transitionend', () => {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+          }, { once: true });
+        }, 2200);
+      }
+
+      // Cursor spotlight
+      generatorCard.addEventListener('mousemove', (e) => {
+        const rect = generatorCard.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        generatorCard.style.setProperty('--cursor-x', x + '%');
+        generatorCard.style.setProperty('--cursor-y', y + '%');
+      });
+
+      // Keyboard shortcut
+      document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && e.target === document.body) {
+          e.preventDefault();
+          handleGenerate();
+        }
+      });
+
+      // Events
+      generateBtn.addEventListener('click', handleGenerate);
+      copyBtn.addEventListener('click', copyExcuse);
+      shareBtn.addEventListener('click', shareExcuse);
+      categoryBtns.forEach(btn => {
+        btn.addEventListener('click', () => selectCategory(btn.dataset.category));
+      });
+
+      // Init
+      function init() {
+        selectCategory('all');
+        const firstExcuse = generateExcuse('all');
+        state.currentExcuse = firstExcuse;
+        const container = excuseText;
+        container.innerHTML = '<span class="fade-content">' + firstExcuse + '</span>';
+        state.excuseCount = 0;
+        state.bugCount = 0;
+        state.deadlineCount = 0;
+        updateStats();
+      }
+
+      init();
+    })();
+  </script>
+
+</body>
+</html>
