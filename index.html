@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dev Excuse Generator</title>
+  <title>Dev Excuse Generator - Ultimate Premium</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;550;600;650;700;800;900&family=JetBrains+Mono:wght@450;500;600;700&display=swap" rel="stylesheet">
@@ -15,24 +15,39 @@
     }
 
     :root {
-      --bg: #0a0a0b;
-      --bg-elevated: #111113;
-      --bg-card: #151517;
-      --bg-hover: #1c1c1f;
-      --border: #1e1e22;
-      --border-hover: #2e2e35;
-      --text-primary: #e4e4e7;
-      --text-secondary: #888896;
-      --text-muted: #5c5c6a;
-      --accent: #6366f1;
-      --accent-bg: rgba(99, 102, 241, 0.1);
-      --accent-border: rgba(99, 102, 241, 0.2);
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
+      --bg: #05050a;
+      --bg-elevated: rgba(14, 14, 28, 0.6);
+      --bg-card: rgba(19, 19, 34, 0.5);
+      --bg-hover: rgba(26, 26, 46, 0.8);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.15);
+      --text-primary: #e2e2f0;
+      --text-secondary: #9494b8;
+      --text-muted: #58587a;
+      --accent: #818cf8;
+      --accent-bg: rgba(129, 140, 248, 0.15);
+      --accent-border: rgba(129, 140, 248, 0.3);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .theme-light {
+      --bg: #fdfcfa;
+      --bg-elevated: rgba(232, 228, 221, 0.6);
+      --bg-card: rgba(250, 248, 245, 0.6);
+      --bg-hover: rgba(240, 236, 230, 0.8);
+      --border: rgba(0, 0, 0, 0.08);
+      --border-hover: rgba(0, 0, 0, 0.15);
+      --text-primary: #1a1814;
+      --text-secondary: #68635b;
+      --text-muted: #a09990;
+      --accent: #d97706;
+      --accent-bg: rgba(217, 119, 6, 0.1);
+      --accent-border: rgba(217, 119, 6, 0.2);
     }
 
     html { scroll-behavior: smooth; }
@@ -47,504 +62,316 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 0 24px;
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal;
+      display: block;
+    }
+    ::view-transition-old(root) { z-index: 1; }
+    ::view-transition-new(root) { z-index: 2; }
+
+    .sky-container {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
     }
 
-    /* HEADER */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 24px 0;
+    .stars-bg {
+      position: absolute; inset: -50%;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0));
+      background-repeat: repeat; background-size: 200px 200px;
+      opacity: 0.6; animation: rotateStars 150s linear infinite; transition: opacity 0.8s ease;
     }
+    .theme-light .stars-bg { opacity: 0; }
+    @keyframes rotateStars { to { transform: rotate(360deg); } }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--text-primary);
+    .moon-element {
+      position: absolute; top: 10%; right: 15%; width: 120px; height: 120px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #f3f4f6, #9ca3af);
+      box-shadow: 0 0 60px rgba(255, 255, 255, 0.2), inset -15px -15px 30px rgba(0,0,0,0.4);
+      transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease;
+      opacity: 1; transform: translateY(0) scale(1);
     }
+    .moon-craters { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; opacity: 0.4; }
+    .crater { position: absolute; background: rgba(0,0,0,0.2); border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3); }
+    .theme-light .moon-element { transform: translateY(-100px) scale(0.5); opacity: 0; }
 
+    .sun-element {
+      position: absolute; top: 8%; right: 12%; width: 160px; height: 160px;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease;
+      opacity: 0; transform: translateY(100px) scale(0.5);
+    }
+    .theme-light .sun-element { opacity: 1; transform: translateY(0) scale(1); }
+    .sun-core {
+      width: 70px; height: 70px; background: #fde047; border-radius: 50%;
+      box-shadow: 0 0 80px #facc15, 0 0 140px #eab308; z-index: 2;
+    }
+    .sun-rays {
+      position: absolute; width: 100%; height: 100%;
+      background: repeating-conic-gradient(from 0deg, rgba(253, 224, 71, 0.2) 0deg, rgba(253, 224, 71, 0.2) 10deg, transparent 10deg, transparent 20deg);
+      border-radius: 50%; animation: spinRays 25s linear infinite; filter: blur(4px);
+    }
+    @keyframes spinRays { to { transform: rotate(360deg); } }
+
+
+    .ambient-glow {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100vw; height: 60vh;
+      background: radial-gradient(ellipse at top, rgba(129, 140, 248, 0.08), transparent 70%); transition: background 1s ease;
+    }
+    .theme-light .ambient-glow { background: radial-gradient(ellipse at top, rgba(250, 204, 21, 0.15), transparent 70%); }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 10; }
+
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 32px 0; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
     .logo-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-mono);
-      font-weight: 600;
-      font-size: 13px;
-      color: #fff;
-      flex-shrink: 0;
-      transition: transform 0.15s ease;
+      width: 36px; height: 36px; border-radius: 10px; background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-weight: 700; font-size: 14px; color: #fff;
+      box-shadow: 0 8px 20px var(--accent-bg); transition: transform 0.2s ease;
     }
+    .logo:hover .logo-icon { transform: scale(1.08) rotate(-5deg); }
+    .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+    .logo-text span { color: var(--accent); }
 
-    .logo:hover .logo-icon {
-      transform: scale(1.08);
+    .theme-toggle {
+      position: fixed; top: 32px; right: 32px; z-index: 100;
+      width: 54px; height: 54px; border-radius: 16px;
+      border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-secondary);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     }
-
-    .logo-text {
-      font-size: 16px;
-      font-weight: 650;
-      letter-spacing: -0.3px;
+    .theme-toggle:hover {
+      transform: scale(1.1); border-color: var(--accent); color: var(--accent);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 20px var(--accent-bg);
     }
+    .theme-toggle svg { width: 22px; height: 22px; transition: transform 0.5s ease, opacity 0.5s ease; position: absolute; }
+    .icon-sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+    .icon-moon { opacity: 1; transform: rotate(0deg) scale(1); }
+    .theme-light .icon-sun { opacity: 1; transform: rotate(0deg) scale(1); }
+    .theme-light .icon-moon { opacity: 0; transform: rotate(90deg) scale(0.5); }
 
-    .logo-text span {
-      color: var(--accent);
-    }
-
-    .header-version {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      letter-spacing: -0.2px;
-    }
-
-    /*  HERO  */
-    .hero {
-      text-align: center;
-      padding: 64px 0 48px;
-    }
-
+    .hero { text-align: center; padding: 20px 0 50px; }
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 100px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 24px;
-      letter-spacing: 0.1px;
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px;
+      border-radius: 100px; background: var(--bg-elevated); border: 1px solid var(--border);
+      font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 24px;
+      backdrop-filter: blur(10px);
     }
+    .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; }
+    .hero h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 16px; }
+    .hero h1 .accent-text { color: var(--accent); display: inline-block; }
+    .hero p { font-size: 16px; color: var(--text-secondary); max-width: 500px; margin: 0 auto; line-height: 1.6; }
 
-    .hero-badge .dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: #22c55e;
-    }
-
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -1.2px;
-      margin-bottom: 14px;
-    }
-
-    .hero h1 .accent-text {
-      color: var(--accent);
-    }
-
-    .hero p {
-      font-size: 15px;
-      color: var(--text-secondary);
-      max-width: 480px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    /*  GENERATOR CARD  */
+    /* PREMIUM CARD */
     .generator-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 32px 32px 28px;
-      position: relative;
-      transition: border-color 0.25s ease, box-shadow 0.25s ease;
-      overflow: hidden;
+      background: var(--bg-card); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px;
+      position: relative; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg));
+      will-change: transform; box-shadow: 0 20px 50px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+      z-index: 5;
     }
-
-    .generator-card::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      background: radial-gradient(600px circle at var(--cursor-x, 50%) var(--cursor-y, 50%), rgba(99, 102, 241, 0.04) 0%, transparent 60%);
-    }
-
+    
     .generator-card:hover {
-      border-color: var(--border-hover);
-      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.25), 0 0 50px var(--accent-bg), inset 0 1px 0 rgba(255,255,255,0.1);
+      transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) translateY(-4px);
+      border-color: var(--accent-border);
     }
 
-    .generator-card:hover::after {
-      opacity: 1;
+    .generator-card::before {
+      content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
+      background: linear-gradient(45deg, var(--accent-border), transparent, var(--border));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
     }
+    
+    @keyframes cardShake {
+      0%, 100% { transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) translate(0, 0); }
+      20% { transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) translate(-4px, 3px) rotate(-1deg); }
+      40% { transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) translate(4px, -3px) rotate(1deg); }
+      60% { transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) translate(-4px, -3px) rotate(0deg); }
+      80% { transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) translate(3px, 3px) rotate(-0.5deg); }
+    }
+    .shake-anim { animation: cardShake 0.4s ease-in-out; }
 
     .category-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 0;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      margin-bottom: 24px;
-      color: var(--accent);
-      transition: color 0.3s ease;
+      display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 30px; color: var(--accent);
     }
+    .category-indicator .indicator-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
 
-    .category-indicator .indicator-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      transition: background 0.3s ease;
-    }
+    .excuse-display { min-height: 120px; display: flex; align-items: center; margin-bottom: 40px; position: relative; }
+    .excuse-text { font-size: clamp(1.4rem, 2.5vw, 1.8rem); font-weight: 600; line-height: 1.5; letter-spacing: -0.5px; color: var(--text-primary); width: 100%; }
+    .empty-state { color: var(--text-muted); font-size: 1.1rem; }
 
-    .excuse-display {
-      min-height: 100px;
-      display: flex;
-      align-items: center;
-      margin-bottom: 28px;
-    }
-
-    .excuse-text {
-      font-size: clamp(1.2rem, 2.2vw, 1.5rem);
-      font-weight: 550;
-      line-height: 1.55;
-      letter-spacing: -0.25px;
-      color: var(--text-primary);
-      width: 100%;
-    }
-
-    .excuse-text .fade-content {
-      display: block;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-    }
-
-    .excuse-text .fade-content.exit {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-
-    .excuse-text .fade-content.enter {
-      animation: fadeSlideIn 0.3s var(--ease-out) forwards;
-    }
-
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .excuse-placeholder {
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .generator-actions {
-      display: flex;
-      gap: 8px;
-    }
-
+    /* BUTTONS  */
+    .generator-actions { display: flex; gap: 12px; position: relative; z-index: 10; }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      border-radius: 8px;
-      font-family: var(--font-sans);
-      font-size: 14px;
-      font-weight: 550;
-      border: none;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      text-decoration: none;
-      white-space: nowrap;
-      -webkit-user-select: none;
-      user-select: none;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      border-radius: 12px; font-family: var(--font-sans); font-size: 15px; font-weight: 600;
+      border: none; cursor: pointer; transition: all 0.2s ease;
     }
-
-    .btn:active {
-      transform: scale(0.96);
-    }
-
+    
     .btn-primary {
-      flex: 1;
-      padding: 11px 20px;
-      background: var(--accent);
-      color: #fff;
-      min-width: 140px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      flex: 1; padding: 14px 24px; background: var(--accent); color: #fff;
+      box-shadow: 0 4px 15px var(--accent-bg), inset 0 1px 1px rgba(255,255,255,0.2);
+      position: relative; overflow: hidden;
     }
-
     .btn-primary:hover {
-      background: color-mix(in srgb, var(--accent) 85%, #fff);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      background: color-mix(in srgb, var(--accent) 80%, #fff);
+      box-shadow: 0 8px 25px var(--accent-bg), inset 0 1px 1px rgba(255,255,255,0.4);
     }
+    
+    @keyframes panicSquish {
+      0% { transform: scale(1); }
+      25% { transform: scale(0.92, 1.08); }
+      50% { transform: scale(1.08, 0.92); }
+      75% { transform: scale(0.96, 1.04); }
+      100% { transform: scale(1); }
+    }
+    .btn-squish { animation: panicSquish 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
     .btn-secondary {
-      padding: 11px 14px;
-      background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid var(--border);
-      min-width: 42px;
+      padding: 14px; background: var(--bg-elevated); color: var(--text-primary);
+      border: 1px solid var(--border); backdrop-filter: blur(10px);
+    }
+    .btn-secondary:hover { background: var(--bg-hover); border-color: var(--accent); color: var(--accent); }
+    .btn-secondary svg { width: 18px; height: 18px; }
+
+    /* FLOATING EMOJIS */
+    .floating-emoji {
+      position: absolute; font-size: 28px; pointer-events: none; z-index: 50; opacity: 1;
+      animation: floatUp 1.2s ease-out forwards;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(20px) scale(0.5) rotate(0deg); opacity: 0; }
+      20% { transform: translateY(-10px) scale(1.2) rotate(15deg); opacity: 1; }
+      100% { transform: translateY(-120px) scale(1) rotate(-25deg); opacity: 0; }
     }
 
-    .btn-secondary:hover {
-      background: var(--bg-hover);
-      border-color: var(--border-hover);
-      color: var(--text-primary);
-    }
-
-    .btn-secondary svg {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-    }
-
-    .btn-success {
-      background: rgba(34, 197, 94, 0.12);
-      border-color: rgba(34, 197, 94, 0.25);
-      color: #22c55e;
-    }
-
-    .btn-success:hover {
-      background: rgba(34, 197, 94, 0.18);
-      border-color: rgba(34, 197, 94, 0.35);
-    }
-
-    .kb-hint {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      opacity: 0.35;
-      margin-left: 4px;
-      font-weight: 500;
-      letter-spacing: 0;
-    }
-
-    .sr-only {
-      position: absolute; width: 1px; height: 1px; padding: 0;
-      margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;
-    }
-
-    /* CATEGORIES  */
-    .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-    }
-
-    .categories {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 48px;
-    }
-
+    /* CATEGORIES */
+    .section-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 40px; margin-bottom: 16px; }
+    .categories { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 50px; }
+    
     .category-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      border-radius: 6px;
-      background: transparent;
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      font-family: var(--font-sans);
-      font-size: 12.5px;
-      font-weight: 500;
-      color: var(--text-secondary);
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 18px; border-radius: 12px; background: var(--bg-elevated); border: 1px solid var(--border);
+      font-size: 13.5px; font-weight: 600; color: var(--text-secondary); cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); backdrop-filter: blur(10px);
     }
-
-    .category-btn:hover {
-      background: var(--bg-hover);
-      border-color: var(--border-hover);
-      color: var(--text-primary);
-    }
-
+    
+    .cat-icon { font-size: 16px; line-height: 1; display: inline-block; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .category-btn:hover { transform: translateY(-3px); border-color: var(--text-primary); color: var(--text-primary); }
+    .category-btn:hover .cat-icon { transform: scale(1.25) rotate(-10deg); }
     .category-btn.active {
-      background: var(--accent-bg);
-      border-color: var(--accent-border);
-      color: var(--accent);
+      background: var(--accent-bg); border-color: var(--accent); color: var(--accent);
+      box-shadow: 0 0 24px var(--accent-bg); transform: translateY(-3px);
+    }
+    .category-btn.active .cat-icon { animation: popIcon 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+    @keyframes popIcon {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4) rotate(15deg); }
+      100% { transform: scale(1.1); }
     }
 
-    .category-btn:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
+    /* STATS GRID  */
+    .stats-grid { 
+      display: grid; 
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 16px; 
+      margin-bottom: 50px; 
     }
-
-    /*  STATS  */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 48px;
-    }
-
     .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 20px 16px;
-      text-align: center;
-      transition: transform 0.15s ease, border-color 0.15s ease;
+      background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 24px 16px; text-align: center; transition: all 0.3s ease; backdrop-filter: blur(10px);
     }
-
-    .stat-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--border-hover);
+    .stat-card:hover { transform: translateY(-4px); border-color: var(--border-hover); background: var(--bg-hover); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    
+    .stat-number { font-size: 32px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; display: inline-block; }
+    
+    @keyframes statPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); color: var(--accent); }
+      100% { transform: scale(1); }
     }
+    .pop-anim { animation: statPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    
+    .stat-label { font-size: 14px; color: var(--text-secondary); font-weight: 600; }
 
-    .stat-number {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text-primary);
-      line-height: 1.2;
-      font-variant-numeric: tabular-nums;
-    }
+    .footer { text-align: center; padding: 40px 0; border-top: 1px solid var(--border); }
+    .footer p { color: var(--text-muted); font-size: 14px; font-weight: 500; }
 
-    .stat-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-      font-weight: 500;
-    }
-
-    /* FOOTER  */
-    .footer {
-      text-align: center;
-      padding: 32px 0 40px;
-      border-top: 1px solid var(--border);
-    }
-
-    .footer p {
-      color: var(--text-muted);
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .footer .heart {
-      color: #f43f5e;
-      display: inline-block;
-    }
-
-    .footer .mono {
-      font-family: var(--font-mono);
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 12px;
-    }
-
-    /* TOAST  */
-    .toast-container {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      pointer-events: none;
-    }
-
+    .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; pointer-events: none; }
     .toast {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 18px;
-      border-radius: 8px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      font-size: 13px;
-      font-weight: 500;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-      transform: translateY(-8px);
-      opacity: 0;
-      transition: transform 0.25s var(--ease-out), opacity 0.2s ease;
-      pointer-events: auto;
+      display: flex; align-items: center; gap: 12px; padding: 14px 24px; border-radius: 14px;
+      background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-primary);
+      font-size: 14px; font-weight: 600; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      transform: translateY(20px) scale(0.9); opacity: 0; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
+    .toast.show { transform: translateY(0) scale(1); opacity: 1; }
+    .toast-success .toast-icon { color: #10b981; font-size: 18px; }
 
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .toast .toast-icon {
-      font-size: 14px;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
-    .toast-success .toast-icon { color: #22c55e; }
-    .toast-error .toast-icon { color: #ef4444; }
-
-    /* RESPONSIVE */
     @media (max-width: 640px) {
-      .container { padding: 0 16px; }
-      .header { padding: 16px 0; }
-      .hero { padding: 40px 0 32px; }
-      .hero p { font-size: 14px; }
-      .generator-card { padding: 24px 20px 20px; }
-      .generator-actions { gap: 6px; }
-      .btn-primary { min-width: unset; padding: 10px 16px; }
-      .btn-secondary { padding: 10px 12px; }
-      .categories { gap: 4px; margin-bottom: 32px; }
-      .category-btn { padding: 6px 10px; font-size: 11.5px; }
-      .stats-grid { gap: 8px; }
-      .stat-card { padding: 16px 10px; }
-      .stat-number { font-size: 20px; }
-      .toast-container { left: 16px; right: 16px; transform: none; }
-    }
-
-    @media (max-width: 480px) {
-      .header-version { display: none; }
-      .categories { flex-wrap: wrap; }
+      .hero h1 { font-size: 2.2rem; }
+      .generator-card { padding: 24px; }
+      .theme-toggle { top: 20px; right: 20px; width: 46px; height: 46px; border-radius: 12px; }
+      .stats-grid { gap: 10px; }
+      .stat-card { padding: 16px; }
+      .stat-number { font-size: 26px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+  <div class="sky-container">
+    <div class="ambient-glow"></div>
+    <div class="stars-bg"></div>
+    <div class="moon-element">
+      <div class="moon-craters">
+        <div class="crater" style="width: 20px; height: 20px; top: 20%; left: 30%;"></div>
+        <div class="crater" style="width: 35px; height: 35px; top: 50%; left: 60%;"></div>
+        <div class="crater" style="width: 15px; height: 15px; top: 70%; left: 20%;"></div>
+      </div>
+    </div>
+    <div class="sun-element">
+      <div class="sun-core"></div>
+      <div class="sun-rays"></div>
+    </div>
+  </div>
+
+  <button class="theme-toggle" id="themeToggle" type="button">
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+
+  <div class="toast-container" id="toastContainer"></div>
 
   <div class="container">
-    <!-- HEADER -->
     <header class="header">
-      <a href="/" class="logo" aria-label="Dev Excuse Generator">
+      <a href="/" class="logo">
         <div class="logo-icon">&lt;/&gt;</div>
         <span class="logo-text">dev<span>excuse</span></span>
       </a>
-      <span class="header-version">v2.0</span>
     </header>
 
-    <!-- HERO -->
     <section class="hero">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        Trusted by 10,000+ procrastinators
-      </div>
-      <h1>
-        Developer<br>
-        <span class="accent-text">Excuse Generator</span>
-      </h1>
-      <p>Professional excuses for bugs, delays, and production disasters. Handcrafted by senior engineers who have seen it all.</p>
+      <div class="hero-badge"><span class="dot"></span>No excuses - Only better excuses</div>
+      <h1>Developer<br><span class="accent-text">Excuse Generator</span></h1>
+      <p>Professional excuses for bugs, delays, and production disasters. Handcrafted for senior engineers.</p>
     </section>
 
-    <!-- GENERATOR -->
-    <section class="generator-card" id="generatorCard" role="region" aria-label="Excuse Generator">
+    <section class="generator-card" id="generatorCard">
       <div class="category-indicator">
         <span class="indicator-dot"></span>
         <span id="categoryLabel">All Excuses</span>
@@ -552,59 +379,46 @@
 
       <div class="excuse-display">
         <div class="excuse-text" id="excuseText">
-          <span class="fade-content">Press <strong>Generate</strong> or hit <strong>Space</strong> for your excuse</span>
+          <span class="fade-content empty-state">Press generate to find an excuse...</span>
         </div>
       </div>
 
       <div class="generator-actions">
-        <button class="btn btn-primary" id="generateBtn" type="button">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
-          Generate
-          <span class="kb-hint">Space</span>
+        <button class="btn btn-primary" id="generateBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+          Generate Excuse
         </button>
-        <button class="btn btn-secondary" id="copyBtn" type="button" title="Copy excuse" aria-label="Copy to clipboard">
+        <button class="btn btn-secondary" id="copyBtn" aria-label="Copy to clipboard">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        </button>
-        <button class="btn btn-secondary" id="shareBtn" type="button" aria-label="Share excuse">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         </button>
       </div>
     </section>
 
-    <!-- CATEGORIES -->
     <div class="section-label">Categories</div>
-    <div class="categories" role="tablist" aria-label="Excuse categories">
-      <button class="category-btn active" data-category="all" role="tab" aria-selected="true">All</button>
-      <button class="category-btn" data-category="frontend" role="tab" aria-selected="false">Frontend</button>
-      <button class="category-btn" data-category="backend" role="tab" aria-selected="false">Backend</button>
-      <button class="category-btn" data-category="devops" role="tab" aria-selected="false">DevOps</button>
-      <button class="category-btn" data-category="database" role="tab" aria-selected="false">Database</button>
-      <button class="category-btn" data-category="ai" role="tab" aria-selected="false">AI</button>
-      <button class="category-btn" data-category="intern" role="tab" aria-selected="false">Intern</button>
+    
+    <div class="categories">
+      <button class="category-btn active" data-category="all"><span class="cat-icon">✨</span> All</button>
+      <button class="category-btn" data-category="frontend"><span class="cat-icon">🎨</span> Frontend</button>
+      <button class="category-btn" data-category="backend"><span class="cat-icon">⚙️</span> Backend</button>
+      <button class="category-btn" data-category="devops"><span class="cat-icon">🚀</span> DevOps</button>
+      <button class="category-btn" data-category="database"><span class="cat-icon">🗄️</span> Database</button>
+      <button class="category-btn" data-category="ai"><span class="cat-icon">🤖</span> AI</button>
+      <button class="category-btn" data-category="intern"><span class="cat-icon">🎒</span> Intern</button>
     </div>
 
-    <!-- STATS -->
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-number" id="statGenerated">0</div>
-        <div class="stat-label">Excuses Generated</div>
-      </div>
       <div class="stat-card">
         <div class="stat-number" id="statBugs">0</div>
         <div class="stat-label">Bugs Blamed</div>
       </div>
       <div class="stat-card">
         <div class="stat-number" id="statDeadlines">0</div>
-        <div class="stat-label">Deadlines Missed</div>
+        <div class="stat-label">Missed Deadlines</div>
       </div>
     </div>
 
-    <!-- FOOTER -->
     <footer class="footer">
-      <p>
-        Built with <span class="heart">&hearts;</span> for developers with humor
-        &mdash; <span class="mono">&lt;/dev/excuse&gt;</span>
-      </p>
+      <p>Built with ❤️ &mdash; &lt;/dev/excuse&gt;</p>
     </footer>
   </div>
 
@@ -916,267 +730,229 @@
           "The hyperparameter tuning found the worst possible combination of settings — by design.",
           "The model is suffering from catastrophic forgetting — including its own purpose in life.",
           "The semantic similarity detector finds everything too similar — it's a maximalist."
-        ],
-        intern: [
-          "I thought 'git push --force' was the recommended workflow.",
-          "I deleted the node_modules folder to free up space. In production.",
-          "I fixed the bug by commenting out the line. Now nothing works.",
-          "I renamed the variable everywhere except where it mattered.",
-          "I committed my API keys to a public repo. Wait, is that bad?",
-          "I ran npm audit fix — it fixed everything into oblivion.",
-          "I used a while loop that's still running from last Tuesday.",
-          "I thought 'localhost' was a real domain.",
-          "I asked ChatGPT to write this. It's ChatGPT's fault.",
-          "I accidentally deployed to production. Twice.",
-          "I refactored the entire codebase to use spaces instead of tabs. That's when it broke.",
-          "The internet told me to use 'sudo' for everything.",
-          "I stored passwords in plaintext because the column was named 'password'.",
-          "I wrote 2000 lines in one file. OOP is overrated anyway.",
-          "I copied code from Stack Overflow. It had a trojan horse.",
-          "I thought 'rm -rf /' would ask for confirmation. It didn't.",
-          "I made the database case-insensitive by converting everything to lowercase.",
-          "I accidentally used 'npm install' in the system32 folder.",
-          "The code worked before I wrote tests for it.",
-          "I used a timestamp as a primary key. All from the same millisecond.",
-          "I fixed a bug by creating two more bugs. Bug recursion.",
-          "I optimized the code by removing all the comments. The code didn't like that.",
-          "I thought 'console.log' was a debugging framework.",
-          "The variable name was 'temp' and now it's permanent.",
-          "I refactored the CSS and now the site looks like 1998.",
-          "I 'sorted' the array by sorting alphabetically. It was an array of numbers.",
-          "I pushed directly to main. Power move.",
-          "I used eval() everywhere. What could go wrong?",
-          "I renamed 'node_modules' to 'node_modules_backup' and everything broke.",
-          "I fixed a bug, committed it, pushed it — to the wrong repository entirely.",
-          "The senior dev told me to 'just read the docs'. I did. They said nothing useful.",
-          "I tried to merge main into my feature branch 47 times. Same conflict every time.",
-          "I optimized all the loops into recursion. Stack overflow happened immediately.",
-          "I thought 'git stash' was where you keep old code you're proud of.",
-          "The IDE told me I had an unused variable. I deleted the entire function.",
-          "I found the bug, fixed it, and realized the bug was my previous fix from yesterday.",
-          "I set up the CI pipeline. It now builds and deploys my code exclusively.",
-          "I documented everything in comments. The code stopped working — it had no privacy.",
-          "I changed one line and 8,000 tests failed. I haven't touched the code since.",
-          "I think I broke the linter. It just prints 'no' and refuses to continue.",
-          "I deployed on a Friday. The universe had strong opinions about that decision.",
-          "The pull request has more commits than actual lines of code changed.",
-          "I refactored the entire codebase into a single line. It's unreadable but it compiles.",
-          "I used a regex to solve the problem. Now I have two problems and a third one forming.",
-          "The code review came back with more comments in the review than lines in the PR.",
-          "I typed 'undefined' so many times it eventually defined itself as a constant.",
-          "The project compiles without errors. That's my definition of 'done' and I'm sticking to it.",
-          "I made the code DRY by literally running it through a clothes dryer cycle.",
-          "I required the same module 300 times across different files. No one noticed.",
-          "The tech lead said 'make it scalable'. Now it scales perfectly to zero concurrent users.",
-          "I thought multithreading meant running the same code with different font sizes.",
-          "I mixed tabs and spaces in the same file. The codebase had a stroke and recovered wrong.",
-          "The git blame shows my name 500 times. I've been here for three days.",
-          "I accidentally used 'npm uninstall' on the entire project. It uninstalled the internet.",
-          "I added semicolons to Python. The language filed a restraining order against me.",
-          "I solved the bug by refreshing Stack Overflow until a new answer materialized.",
-          "My commit message was 'fixed stuff'. The stuff is demonstrably not fixed.",
-          "I copied the production database to my machine for testing. My laptop melted.",
-          "I tried to center a div. I quit three times and came back each time.",
-          "The error message said 'unexpected token'. It was referring to my entire coding style."
+       
         ]
       };
 
-      // Category accent colors
+
+      const categoryEmojis = {
+        frontend: ['🎨', '✨', '💅', '🚀'],
+        backend: ['⚙️', '🔌', '🗄️', '🧱'],
+        devops: ['🚀', '🔥', '☁️', '🏗️'],
+        database: ['🗄️', '📉', '🔍', '💥'],
+        ai: ['🤖', '🧠', '⚡', '🔮'],
+        intern: ['💀', '😭', '🔥', '🚑'],
+        all: ['🚀', '💥', '💀', '🤡']
+      };
+
       const categoryColors = {
-        all: '#6366f1',
-        frontend: '#f59e0b',
-        backend: '#10b981',
-        devops: '#3b82f6',
-        database: '#8b5cf6',
-        ai: '#ec4899',
-        intern: '#f97316'
+        all: '#818cf8', frontend: '#f59e0b', backend: '#10b981', devops: '#3b82f6',
+        database: '#8b5cf6', ai: '#ec4899', intern: '#f97316'
       };
 
       const categoryNames = {
-        all: 'All Excuses',
-        frontend: 'Frontend',
-        backend: 'Backend',
-        devops: 'DevOps',
-        database: 'Database',
-        ai: 'AI',
-        intern: 'Intern'
+        all: 'All Excuses', frontend: 'Frontend', backend: 'Backend', devops: 'DevOps',
+        database: 'Database', ai: 'AI', intern: 'Intern'
       };
 
-      const state = {
-        currentCategory: 'all',
-        currentExcuse: '',
-        excuseCount: 0,
-        bugCount: 0,
-        deadlineCount: 0
+      const savedBugs = parseInt(localStorage.getItem('dev-excuse-bugs')) || 0;
+      const savedDeadlines = parseInt(localStorage.getItem('dev-excuse-deadlines')) || 0;
+
+      const state = { 
+        currentCategory: 'all', 
+        currentExcuse: '', 
+        bugs: savedBugs, 
+        deadlines: savedDeadlines, 
+        isGenerating: false 
       };
 
-      const excuseText   = document.getElementById('excuseText');
-      const generateBtn  = document.getElementById('generateBtn');
-      const copyBtn      = document.getElementById('copyBtn');
-      const shareBtn     = document.getElementById('shareBtn');
-      const categoryBtns = document.querySelectorAll('.category-btn');
-      const categoryLabel = document.getElementById('categoryLabel');
-      const toastContainer = document.getElementById('toastContainer');
-      const statGenerated = document.getElementById('statGenerated');
-      const statBugs      = document.getElementById('statBugs');
-      const statDeadlines = document.getElementById('statDeadlines');
+      const root = document.documentElement;
+      const themeToggle = document.getElementById('themeToggle');
       const generatorCard = document.getElementById('generatorCard');
-      const indicatorDot  = document.querySelector('.indicator-dot');
-      const root          = document.documentElement;
+      const excuseText = document.getElementById('excuseText');
+      const generateBtn = document.getElementById('generateBtn');
+      const copyBtn = document.getElementById('copyBtn');
+      const toastContainer = document.getElementById('toastContainer');
+      const statBugs = document.getElementById('statBugs');
+      const statDeadlines = document.getElementById('statDeadlines');
 
-      function getExcusesForCategory(cat) {
-        if (cat === 'all') {
-          const all = [];
-          for (const key of Object.keys(excuses)) all.push(...excuses[key]);
-          return all;
+
+      statBugs.textContent = state.bugs;
+      statDeadlines.textContent = state.deadlines;
+
+      /*  EPIC THEME TOGGLE */
+      themeToggle.addEventListener('click', () => {
+        const targetTheme = root.classList.contains('theme-light') ? 'dark' : 'light';
+        if (!document.startViewTransition) {
+          root.classList.toggle('theme-light');
+          localStorage.setItem('dev-excuse-theme', targetTheme);
+          return;
         }
-        return excuses[cat] || [];
+        const rect = themeToggle.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+
+        const transition = document.startViewTransition(() => {
+          root.classList.toggle('theme-light');
+          localStorage.setItem('dev-excuse-theme', targetTheme);
+        });
+
+        transition.ready.then(() => {
+          root.animate([
+            { clipPath: `circle(0px at ${x}px ${y}px)` },
+            { clipPath: `circle(${endRadius}px at ${x}px ${y}px)` }
+          ], { duration: 800, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', pseudoElement: '::view-transition-new(root)' });
+        });
+      });
+
+      if (localStorage.getItem('dev-excuse-theme') === 'light') root.classList.add('theme-light');
+
+      /*  GLITCH TEXT ANIMATION */
+      function scrambleText(element, finalString, duration = 600) {
+        const chars = '!<>-_\\/[]{}—=+*^?#_010101';
+        let start = Date.now();
+        
+        let interval = setInterval(() => {
+          let now = Date.now();
+          let progress = (now - start) / duration;
+          
+          if (progress >= 1) {
+            clearInterval(interval);
+            element.textContent = finalString;
+            return;
+          }
+          
+          let scrambled = finalString.split('').map((char, index) => {
+            if (char === ' ') return ' ';
+            if (index < finalString.length * progress) return finalString[index];
+            return chars[Math.floor(Math.random() * chars.length)];
+          }).join('');
+          
+          element.textContent = scrambled;
+        }, 30);
       }
 
-      function generateExcuse(category) {
-        const pool = getExcusesForCategory(category);
-        return pool[Math.floor(Math.random() * pool.length)];
+      /*  SPAWN EMOJIS  */
+      function spawnEmojis(cat) {
+        const pool = categoryEmojis[cat] || categoryEmojis.all;
+        for(let i=0; i<4; i++) {
+          let el = document.createElement('div');
+          el.className = 'floating-emoji';
+          el.textContent = pool[Math.floor(Math.random() * pool.length)];
+          el.style.left = (15 + Math.random() * 70) + '%';
+          el.style.bottom = '40px';
+          generatorCard.appendChild(el);
+          setTimeout(() => el.remove(), 1200);
+        }
       }
 
-      function setAccent(color) {
-        root.style.setProperty('--accent', color);
-        root.style.setProperty('--accent-bg', color + '1a');
-        root.style.setProperty('--accent-border', color + '33');
+      /* GENERATOR LOGIC */
+      function generateExcuse() {
+        if (state.isGenerating) return;
+        state.isGenerating = true;
+    
+        generateBtn.classList.remove('btn-squish');
+        generatorCard.classList.remove('shake-anim');
+        void generateBtn.offsetWidth; 
+        generateBtn.classList.add('btn-squish');
+        generatorCard.classList.add('shake-anim');
+
+        const pool = state.currentCategory === 'all' ? Object.values(excuses).flat() : (excuses[state.currentCategory] || excuses.frontend);
+        const newExcuse = pool[Math.floor(Math.random() * pool.length)];
+        state.currentExcuse = newExcuse;
+
+        const textSpan = excuseText.querySelector('span');
+        textSpan.classList.remove('empty-state');
+        scrambleText(textSpan, newExcuse, 600);
+
+        spawnEmojis(state.currentCategory);
+
+        setTimeout(() => {
+          state.bugs += Math.floor(Math.random() * 3) + 1; 
+          state.deadlines += Math.floor(Math.random() * 2);
+
+          // SAVE TO LOCALSTORAGE
+          localStorage.setItem('dev-excuse-bugs', state.bugs);
+          localStorage.setItem('dev-excuse-deadlines', state.deadlines);
+
+          updateStats();
+          state.isGenerating = false;
+        }, 600);
+      }
+
+      /* UI INTERACTIONS  */
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cat = btn.dataset.category;
+          state.currentCategory = cat;
+          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          // Re-trigger icon pop animation
+          const icon = btn.querySelector('.cat-icon');
+          icon.style.animation = 'none';
+          void icon.offsetWidth;
+          icon.style.animation = '';
+
+          document.getElementById('categoryLabel').textContent = categoryNames[cat];
+          root.style.setProperty('--accent', categoryColors[cat]);
+          root.style.setProperty('--accent-bg', categoryColors[cat] + '26');
+          root.style.setProperty('--accent-border', categoryColors[cat] + '40');
+        });
+      });
+
+      copyBtn.addEventListener('click', async () => {
+        if (!state.currentExcuse) return showToast('Generate an excuse first!', 'error');
+        await navigator.clipboard.writeText(state.currentExcuse);
+        showToast('Excuse copied to clipboard', 'success');
+      });
+
+      generateBtn.addEventListener('click', generateExcuse);
+      
+      function showToast(msg, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `<span class="toast-icon">&#10004;</span> ${msg}`;
+        toastContainer.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => toast.remove(), 400);
+        }, 2500);
       }
 
       function updateStats() {
-        statGenerated.textContent = state.excuseCount.toLocaleString();
-        statBugs.textContent = state.bugCount.toLocaleString();
-        statDeadlines.textContent = state.deadlineCount.toLocaleString();
-      }
-
-      function animateExcuseChange(newExcuse) {
-        const container = excuseText;
-        const current = container.querySelector('.fade-content');
-        if (current) {
-          current.classList.remove('enter');
-          current.classList.add('exit');
-          const old = current;
-          setTimeout(() => {
-            const span = document.createElement('span');
-            span.className = 'fade-content enter';
-            span.textContent = newExcuse;
-            container.replaceChild(span, old);
-          }, 150);
-        }
-      }
-
-      function handleGenerate() {
-        const newExcuse = generateExcuse(state.currentCategory);
-        state.currentExcuse = newExcuse;
-        animateExcuseChange(newExcuse);
-        state.excuseCount += 1;
-        state.bugCount += Math.floor(Math.random() * 3) + 1;
-        state.deadlineCount += Math.floor(Math.random() * 2) + (Math.random() > 0.7 ? 1 : 0);
-        updateStats();
-      }
-
-      function selectCategory(cat) {
-        state.currentCategory = cat;
-
-        categoryBtns.forEach(btn => {
-          const isActive = btn.dataset.category === cat;
-          btn.classList.toggle('active', isActive);
-          btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        [statBugs, statDeadlines].forEach(el => {
+          el.classList.remove('pop-anim');
+          void el.offsetWidth;
+          el.classList.add('pop-anim');
         });
-
-        categoryLabel.textContent = categoryNames[cat] || 'All Excuses';
-        setAccent(categoryColors[cat] || '#6366f1');
+        statBugs.textContent = state.bugs;
+        statDeadlines.textContent = state.deadlines;
       }
 
-      async function copyExcuse() {
-        if (!state.currentExcuse) {
-          showToast('Generate an excuse first', 'error');
-          return;
-        }
-        try {
-          await navigator.clipboard.writeText(state.currentExcuse);
-          copyBtn.classList.add('btn-success');
-          const svg = copyBtn.querySelector('svg');
-          const original = svg.innerHTML;
-          svg.innerHTML = '<path d="M20 6L9 17l-5-5"/>';
-          showToast('Copied to clipboard', 'success');
-          setTimeout(() => {
-            copyBtn.classList.remove('btn-success');
-            svg.innerHTML = original;
-          }, 1800);
-        } catch {
-          showToast('Could not copy', 'error');
-        }
-      }
-
-      function shareExcuse() {
-        if (!state.currentExcuse) {
-          showToast('Generate an excuse first', 'error');
-          return;
-        }
-        if (navigator.share) {
-          navigator.share({ title: 'Dev Excuse', text: state.currentExcuse }).catch(() => {});
-        } else {
-          copyExcuse();
-          showToast('Copied — ready to share', 'success');
-        }
-      }
-
-      function showToast(message, type) {
-        const toast = document.createElement('div');
-        toast.className = 'toast toast-' + type;
-        const icon = type === 'success' ? '&#10003;' : '&#10005;';
-        toast.innerHTML = '<span class="toast-icon">' + icon + '</span><span>' + message + '</span>';
-        toastContainer.appendChild(toast);
-        requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
-        setTimeout(() => {
-          toast.classList.remove('show');
-          toast.addEventListener('transitionend', () => {
-            if (toast.parentNode) toast.parentNode.removeChild(toast);
-          }, { once: true });
-        }, 2200);
-      }
-
-      // Cursor spotlight
+      /* 3D TILT EFFECT  */
+      let tiltRaf;
+      const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
       generatorCard.addEventListener('mousemove', (e) => {
         const rect = generatorCard.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        generatorCard.style.setProperty('--cursor-x', x + '%');
-        generatorCard.style.setProperty('--cursor-y', y + '%');
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        generatorCard.style.setProperty('--cursor-x', `${x * 100}%`);
+        generatorCard.style.setProperty('--cursor-y', `${y * 100}%`);
+        tilt.tx = (x - 0.5) * 6; tilt.ty = (y - 0.5) * -6;
+        if (!tiltRaf) tickTilt();
       });
-
-      // Keyboard shortcut
-      document.addEventListener('keydown', (e) => {
-        if (e.code === 'Space' && e.target === document.body) {
-          e.preventDefault();
-          handleGenerate();
-        }
-      });
-
-      // Events
-      generateBtn.addEventListener('click', handleGenerate);
-      copyBtn.addEventListener('click', copyExcuse);
-      shareBtn.addEventListener('click', shareExcuse);
-      categoryBtns.forEach(btn => {
-        btn.addEventListener('click', () => selectCategory(btn.dataset.category));
-      });
-
-      // Init
-      function init() {
-        selectCategory('all');
-        const firstExcuse = generateExcuse('all');
-        state.currentExcuse = firstExcuse;
-        const container = excuseText;
-        container.innerHTML = '<span class="fade-content">' + firstExcuse + '</span>';
-        state.excuseCount = 0;
-        state.bugCount = 0;
-        state.deadlineCount = 0;
-        updateStats();
+      generatorCard.addEventListener('mouseleave', () => { tilt.tx = 0; tilt.ty = 0; });
+      
+      function tickTilt() {
+        tilt.x += (tilt.tx - tilt.x) * 0.1; tilt.y += (tilt.ty - tilt.y) * 0.1;
+        generatorCard.style.setProperty('--rotate-x', `${tilt.y}deg`);
+        generatorCard.style.setProperty('--rotate-y', `${tilt.x}deg`);
+        if (Math.abs(tilt.x - tilt.tx) > 0.01) { tiltRaf = requestAnimationFrame(tickTilt); } 
+        else { tiltRaf = null; }
       }
-
-      init();
     })();
   </script>
 
