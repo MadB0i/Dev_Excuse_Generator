@@ -5,4 +5,5 @@ Features:
 - Category filters
 - Copy to clipboard
 - Keyboard shortcuts
-- Clean developer-focused UI
+- Clean developer-focused UI.
+
