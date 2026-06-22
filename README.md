@@ -1,4 +1,4 @@
-A fun developer tool that generates hilarious programming excuses.
+A fun developer tool that generates hilarious programming excuses ;)
 
 Features:
 - 200+ developer excuses
