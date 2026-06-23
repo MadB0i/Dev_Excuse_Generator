@@ -6,4 +6,3 @@ Features:
 - Copy to clipboard
 - Keyboard shortcuts
 - Clean developer-focused UI.
-
